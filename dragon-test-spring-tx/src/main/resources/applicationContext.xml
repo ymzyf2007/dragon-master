@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+	
+	<!-- 配置数据库连接池 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/ym_test" />
+		<property name="username" value="root" />
+		<property name="password" value="123456" />
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- ####################################事务隔离级别测试开始########################################## -->
+	<!-- 读未提交 -->
+	<bean id="readUncommittedTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="isolationLevelName" value="ISOLATION_READ_UNCOMMITTED" />
+	</bean>
+	
+	<!-- 读已提交 -->
+	<bean id="readCommittedTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="isolationLevelName" value="ISOLATION_READ_COMMITTED" />
+	</bean>
+	
+	<!-- 可重复读 -->
+	<bean id="repeatableReadTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="isolationLevelName" value="ISOLATION_REPEATABLE_READ" />
+	</bean>
+	
+	<!-- 序列化 -->
+	<bean id="serializableTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="isolationLevelName" value="ISOLATION_SERIALIZABLE" />
+	</bean>
+	<!-- ####################################事务隔离级别测试结束########################################## -->
+	
+	<!-- ####################################事务传播行为测试开始########################################## -->
+	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+	
+	<bean id="requiresNewTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="propagationBehaviorName" value="PROPAGATION_REQUIRES_NEW" />
+	</bean>
+	
+	<bean id="nestedTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="propagationBehaviorName" value="PROPAGATION_NESTED" />
+	</bean>
+	
+	<bean id="mandatoryTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="propagationBehaviorName" value="PROPAGATION_MANDATORY" />
+	</bean>
+	
+	<bean id="neverTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="propagationBehaviorName" value="PROPAGATION_NEVER" />
+	</bean>
+	
+	<bean id="notSupportedTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="propagationBehaviorName" value="PROPAGATION_NOT_SUPPORTED" />
+	</bean>
+	
+	<bean id="supportsTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="propagationBehaviorName" value="PROPAGATION_SUPPORTS" />
+	</bean>
+	
+	<bean id="springTxTest" class="org.alex.spring.tx.SpringTxTestImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="requiresNewTransactionTemplate" ref="requiresNewTransactionTemplate" />
+		<property name="nestedTransactionTemplate" ref="nestedTransactionTemplate" />
+		<property name="mandatoryTransactionTemplate" ref="mandatoryTransactionTemplate" />
+		<property name="neverTransactionTemplate" ref="neverTransactionTemplate" />
+		<property name="notSupportedTransactionTemplate" ref="notSupportedTransactionTemplate" />
+		<property name="supportsTransactionTemplate" ref="supportsTransactionTemplate" />
+	</bean>
+	<!-- ####################################事务传播行为测试结束########################################## -->
+	
+	<!-- ####################################dota英雄测试编程式事务、声明式事务、注解式事务开始########################################## -->
+	<bean id="littleFishHero" class="org.alex.spring.tx.eg.LittleFishHero">
+		<property name="name" value="LittleFishHero" />
+		<property name="manaConsume" value="100" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="sliHero" class="org.alex.spring.tx.eg.SliHero">
+		<property name="name" value="SliHero" />
+		<property name="manaConsume" value="110" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 编程式事务 -->
+	<bean id="aopHero" class="org.alex.spring.tx.eg.AopHero">
+		<property name="littleFishHero" ref="littleFishHero" />
+		<property name="sliHero" ref="sliHero" />
+	</bean>
+	
+	<!-- 声明式事务【配置AOP第一种方式：基于xml配置文件配置】 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	 -->
+	 
+	<aop:config>
+		<!-- 配置切入点（一个pointcut对应多个连接点[joinpoint]） -->
+		<aop:pointcut id="skill" expression="execution(* org.alex.spring.tx.eg.AopHero.skill(..))" />
+		<!-- <aop:advisor advice-ref="" pointcut-ref=""【用来定义只有一个通知和一个切入点的切面】 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="skill" />
+	</aop:config>
+	
+	<bean id="anotionHero" class="org.alex.spring.tx.eg.AnotionHero">
+		<property name="littleFishHero" ref="littleFishHero" />
+		<property name="sliHero" ref="sliHero" />
+	</bean>
+	
+	<!-- 基于注解的事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- ####################################dota英雄测试编程式事务、声明式事务、注解式事务结束########################################## -->
+</beans>

@@ -6,6 +6,10 @@
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
 	
+	<properties>
+        <spring-version>4.3.4.RELEASE</spring-version>
+    </properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -21,33 +25,38 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>4.3.4.RELEASE</version>
+			<version>${spring-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>4.3.4.RELEASE</version>
+			<version>${spring-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.3.4.RELEASE</version>
+			<version>${spring-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<version>4.3.4.RELEASE</version>
+			<version>${spring-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<version>4.3.4.RELEASE</version>
+			<version>${spring-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>4.3.4.RELEASE</version>
+			<version>${spring-version}</version>
 		</dependency>
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -73,6 +82,25 @@
 			<version>1.4.2.RELEASE</version>
 		</dependency>
 		
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.6.8</version>
+        </dependency>
+        
+        <!-- 数据库连接池 -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <!-- Mysql数据库驱动 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.26</version>
+        </dependency>
+		
 		<!-- 添加junit支持 -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -88,6 +116,7 @@
 		<module>dragon-redis</module>
 		<module>dragon-rocketmq</module>
 		<module>dragon-dubbo</module>
-    <module>dragon-redis-queue</module>
-  </modules>
+    	<module>dragon-redis-queue</module>
+    	<module>dragon-test-spring-tx</module>
+  	</modules>
 </project>
