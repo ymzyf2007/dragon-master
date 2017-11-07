@@ -1,5 +1,7 @@
 package com.dragon.rmq.common;
 
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -341,6 +343,77 @@ public class RedisUtil {
 			log.error("lpop error : " + e);
 		}
         return bytes;
+    }
+    
+    public static void zadd(String key, double score, String member) {
+    	try {
+    		if (jedisPool == null) {
+				poolInit();
+			}
+			Jedis jedis = null;
+			boolean broken = true;
+			try {
+				jedis = jedisPool.getResource();
+				jedis.auth(PWD);
+				jedis.zadd(key, score, member);
+			} catch (JedisException e) {
+				broken = handleJedisException(e);
+				throw e;
+			} finally {
+				closeResource(jedis, broken);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("zadd error : " + e);
+		}
+    }
+    
+    public static Set<String> zrangeByScore(String key, double min, double max) {
+    	try {
+    		if (jedisPool == null) {
+				poolInit();
+			}
+			Jedis jedis = null;
+			boolean broken = true;
+			try {
+				jedis = jedisPool.getResource();
+				jedis.auth(PWD);
+				return jedis.zrangeByScore(key, min, max);
+			} catch (JedisException e) {
+				broken = handleJedisException(e);
+				throw e;
+			} finally {
+				closeResource(jedis, broken);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("zadd error : " + e);
+		}
+    	return null;
+    }
+    
+    public static Long zrem(String key, String... members) {
+    	try {
+    		if (jedisPool == null) {
+				poolInit();
+			}
+			Jedis jedis = null;
+			boolean broken = true;
+			try {
+				jedis = jedisPool.getResource();
+				jedis.auth(PWD);
+				return jedis.zrem(key, members);
+			} catch (JedisException e) {
+				broken = handleJedisException(e);
+				throw e;
+			} finally {
+				closeResource(jedis, broken);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("zadd error : " + e);
+		}
+    	return null;
     }
     
 }
