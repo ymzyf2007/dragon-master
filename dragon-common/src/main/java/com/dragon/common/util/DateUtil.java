@@ -11,6 +11,10 @@ public class DateUtil {
 	private static WeakHashMap<String, SimpleDateFormat> simpleDateFormats = new WeakHashMap<String, SimpleDateFormat>();
 	
 	private static String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	private static String DEFAULT_LONGFORMAT = "yyyyMMddHHmmss";
+	
+	private DateUtil() {
+	}
 	
 	private static synchronized SimpleDateFormat getSimpleDateFormat(String format) {
 		SimpleDateFormat sdf = simpleDateFormats.get(format);
@@ -55,6 +59,10 @@ public class DateUtil {
 		return Long.parseLong(format(date, format));
 	}
 	
+	public static long formatToLong(Date date) {
+		return Long.parseLong(format(date, DEFAULT_LONGFORMAT));
+	}
+	
 	public static Date parseFromInt(int date, String format) {
 		return parse(String.valueOf(date), format);
 	}
@@ -64,6 +72,18 @@ public class DateUtil {
 		calendar.setTime(date);
 		calendar.add(field, amount);
 		return calendar.getTime();
+	}
+	
+	/**
+	 * 日期相加
+	 * @param date
+	 * @param day
+	 * @return
+	 */
+	public static Date addDate(Date date, int day) {
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(c.getTimeInMillis() + day*24*3600*1000);
+		return c.getTime();
 	}
 
 }
