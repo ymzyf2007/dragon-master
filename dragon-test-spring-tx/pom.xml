@@ -18,10 +18,10 @@
 			<scope>provided</scope>
 		</dependency>
 		
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>${freemarker.version}</version>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 </project>
